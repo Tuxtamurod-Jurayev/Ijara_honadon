@@ -7,11 +7,8 @@ import {
   Filter,
   RotateCcw,
   Home,
-  CheckSquare,
-  Square,
   ChevronDown,
   ChevronUp,
-  MapPin,
 } from 'lucide-react';
 
 interface HouseFiltersProps {
@@ -24,15 +21,6 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const roomOptions = ['all', '1', '2', '3', '4+'] as const;
-
-  const handleTextChange = (key: keyof HouseFilterParams, val: string) => {
-    onChange({ ...filters, [key]: val });
-  };
-
-  const handleNumberChange = (key: 'minPrice' | 'maxPrice', val: string) => {
-    const num = val === '' ? undefined : Number(val);
-    onChange({ ...filters, [key]: num });
-  };
 
   const handleRoomSelect = (room: string) => {
     onChange({
@@ -64,197 +52,164 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
   ];
 
   return (
-    <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-lg border border-slate-200/90 relative">
-      {/* Top Bar: Search by Address / Keyword */}
-      <div className="space-y-4">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-            <Search className="w-5 h-5 text-emerald-600" />
+    <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+      {/* 1. Manzil qidirish */}
+      <div className="relative mb-3">
+        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <Search className="w-4 h-4 text-emerald-600" />
+        </div>
+        <input
+          type="text"
+          placeholder="Manzil qidirish (masalan: Namangan shahar, Davlatobod, Chorsu...)"
+          value={filters.search || ''}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-emerald-500 focus:bg-white transition-colors"
+        />
+      </div>
+
+      {/* 2. Soddalashtirilgan tezkor tugmalar (TZ 8-bo'limga mos) */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Xonalar soni */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg">
+            {roomOptions.map((r) => {
+              const isSelected =
+                (r === 'all' && (!filters.rooms || filters.rooms === 'all')) ||
+                filters.rooms === r;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => handleRoomSelect(r)}
+                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                    isSelected
+                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {r === 'all' ? 'Barchasi' : `${r} xona`}
+                </button>
+              );
+            })}
           </div>
-          <input
-            type="text"
-            placeholder="Manzil yoki hududni qidiring (masalan: Namangan shahar, Davlatobod, Chorsu...)"
-            value={filters.search || ''}
-            onChange={(e) => handleTextChange('search', e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-emerald-500 focus:bg-white transition-all shadow-inner"
-          />
+
+          {/* Oilaviy */}
+          <button
+            type="button"
+            onClick={() => onChange({ ...filters, forFamily: !filters.forFamily })}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+              filters.forFamily
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            👨‍👩‍👧 Oilaviy
+          </button>
+
+          {/* Talabalar */}
+          <button
+            type="button"
+            onClick={() => onChange({ ...filters, forStudents: !filters.forStudents })}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+              filters.forStudents
+                ? 'bg-amber-600 text-white border-amber-600'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            🎓 Talabalar
+          </button>
+
+          {/* Qulayliklar va narx toggle */}
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+          >
+            <Filter className="w-3.5 h-3.5 text-slate-500" />
+            <span>Narx va qulayliklar</span>
+            {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
         </div>
 
-        {/* Quick Filter Row: Room Buttons & Primary Toggles */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-          {/* Room Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
-              <Home className="w-3.5 h-3.5" /> Xonalar:
+        {/* Filtrlarni tozalash */}
+        {(filters.search || filters.forFamily || filters.forStudents || (filters.rooms && filters.rooms !== 'all') || filters.minPrice || filters.maxPrice) && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-rose-600 transition-colors"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Tozalash</span>
+          </button>
+        )}
+      </div>
+
+      {/* Qo'shimcha sodda parametrlar */}
+      {showAdvanced && (
+        <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 animate-in fade-in duration-150">
+          {/* Narx oralig'i */}
+          <div>
+            <span className="block text-2xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+              Narx oralig‘i (so‘m):
             </span>
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl">
-              {roomOptions.map((r) => {
-                const isSelected =
-                  (r === 'all' && (!filters.rooms || filters.rooms === 'all')) ||
-                  filters.rooms === r;
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                placeholder="Min narx (masalan: 500 000)"
+                value={filters.minPrice ?? ''}
+                onChange={(e) =>
+                  onChange({
+                    ...filters,
+                    minPrice: e.target.value === '' ? undefined : Number(e.target.value),
+                  })
+                }
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-emerald-500"
+              />
+              <input
+                type="number"
+                placeholder="Maks narx (masalan: 3 000 000)"
+                value={filters.maxPrice ?? ''}
+                onChange={(e) =>
+                  onChange({
+                    ...filters,
+                    maxPrice: e.target.value === '' ? undefined : Number(e.target.value),
+                  })
+                }
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-emerald-500"
+              />
+            </div>
+          </div>
+
+          {/* Qulayliklar */}
+          <div>
+            <span className="block text-2xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+              Qulayliklar:
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {amenitiesList.map((item) => {
+                const isChecked = Boolean(
+                  filters.amenities && filters.amenities[item.key as keyof typeof filters.amenities]
+                );
                 return (
                   <button
-                    key={r}
+                    key={item.key}
                     type="button"
-                    onClick={() => handleRoomSelect(r)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      isSelected
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                    onClick={() => handleAmenityToggle(item.key)}
+                    className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs text-left transition-colors ${
+                      isChecked
+                        ? 'bg-emerald-50 border-emerald-400 text-emerald-900 font-bold'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white'
                     }`}
                   >
-                    {r === 'all' ? 'Barchasi' : `${r}`}
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
-
-          {/* Target Audience: Oilaviy / Talabalar Checkboxes */}
-          <div className="flex items-center gap-4">
-            <label className="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-slate-700 hover:text-emerald-700">
-              <input
-                type="checkbox"
-                checked={Boolean(filters.forFamily)}
-                onChange={(e) => onChange({ ...filters, forFamily: e.target.checked })}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
-              />
-              <span>👨‍👩‍👧 Oilaviy</span>
-            </label>
-
-            <label className="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-slate-700 hover:text-emerald-700">
-              <input
-                type="checkbox"
-                checked={Boolean(filters.forStudents)}
-                onChange={(e) => onChange({ ...filters, forStudents: e.target.checked })}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
-              />
-              <span>🎓 Talabalar</span>
-            </label>
-
-            {/* Toggle Advanced Filters Button */}
-            <button
-              type="button"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span>{showAdvanced ? 'Filtrni qisqartirish' : 'Barcha filtrlar'}</span>
-              {showAdvanced ? (
-                <ChevronUp className="w-3.5 h-3.5" />
-              ) : (
-                <ChevronDown className="w-3.5 h-3.5" />
-              )}
-            </button>
-          </div>
         </div>
-
-        {/* Collapsible Advanced Filters Section */}
-        {showAdvanced && (
-          <div className="pt-5 border-t border-slate-100 space-y-5 animate-in fade-in duration-200">
-            {/* Price Range */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                Oylik ijara narxi (so‘m):
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <input
-                    type="number"
-                    placeholder="Minimal narx (masalan: 500 000)"
-                    value={filters.minPrice ?? ''}
-                    onChange={(e) => handleNumberChange('minPrice', e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-emerald-500 focus:bg-white"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    placeholder="Maksimal narx (masalan: 3 000 000)"
-                    value={filters.maxPrice ?? ''}
-                    onChange={(e) => handleNumberChange('maxPrice', e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-emerald-500 focus:bg-white"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Price Type */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                Narx turi:
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { value: 'all', label: 'Barchasi' },
-                  { value: 'xonadon', label: 'Xonadon uchun' },
-                  { value: 'xona', label: 'Xona uchun' },
-                  { value: 'odam_boshi', label: 'Odam boshiga' },
-                ].map((item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() =>
-                      onChange({
-                        ...filters,
-                        priceType: item.value as any,
-                      })
-                    }
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                      (filters.priceType || 'all') === item.value
-                        ? 'bg-slate-900 text-white border-slate-900'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Amenities Checklist */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                Qulayliklar:
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                {amenitiesList.map((item) => {
-                  const isChecked = Boolean(
-                    filters.amenities && filters.amenities[item.key as keyof typeof filters.amenities]
-                  );
-                  return (
-                    <button
-                      key={item.key}
-                      type="button"
-                      onClick={() => handleAmenityToggle(item.key)}
-                      className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-medium text-left transition-all ${
-                        isChecked
-                          ? 'bg-emerald-50 border-emerald-400 text-emerald-900 font-semibold'
-                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
-                      }`}
-                    >
-                      <span>{item.icon}</span>
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Reset Filter Button */}
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={onReset}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-600 hover:text-rose-600 transition-colors"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Filtrlarni tozalash
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }
