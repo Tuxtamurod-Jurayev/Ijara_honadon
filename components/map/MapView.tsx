@@ -98,9 +98,9 @@ export default function MapView({ latitude, longitude, title, address }: MapView
   return (
     <div className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
       <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-emerald-600" />
-          <span className="font-bold text-slate-800 text-sm">📍 Xonadon joylashuvi xaritada</span>
+        <div className="flex items-center gap-1.5">
+          <MapPin className="w-4 h-4 text-zinc-500" />
+          <span className="font-medium text-zinc-800 text-xs sm:text-sm">Xonadon joylashuvi</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <a

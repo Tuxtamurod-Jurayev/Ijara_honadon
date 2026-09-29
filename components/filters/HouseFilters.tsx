@@ -1,15 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HouseFilterParams, PriceType } from '@/types/house';
-import {
-  Search,
-  Filter,
-  RotateCcw,
-  Home,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
+import { HouseFilterParams } from '@/types/house';
+import { Search, SlidersHorizontal, RotateCcw } from 'lucide-react';
 
 interface HouseFiltersProps {
   filters: HouseFilterParams;
@@ -41,37 +34,44 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
   };
 
   const amenitiesList = [
-    { key: 'air_conditioner', label: 'Konditsioner', icon: '❄️' },
-    { key: 'tv', label: 'Televizor', icon: '📺' },
-    { key: 'refrigerator', label: 'Muzlatkich', icon: '🧊' },
-    { key: 'wifi', label: 'Wi-Fi', icon: '📶' },
-    { key: 'washing_machine', label: 'Kir yuvish m.', icon: '🧺' },
-    { key: 'furniture', label: 'Mebel', icon: '🛋️' },
-    { key: 'kitchen', label: 'Oshxona', icon: '🍳' },
-    { key: 'bathroom', label: 'Hammom', icon: '🚿' },
+    { key: 'air_conditioner', label: 'Konditsioner' },
+    { key: 'tv', label: 'Televizor' },
+    { key: 'refrigerator', label: 'Muzlatkich' },
+    { key: 'wifi', label: 'Wi-Fi' },
+    { key: 'washing_machine', label: 'Kir yuvish mashinasi' },
+    { key: 'furniture', label: 'Mebel' },
+    { key: 'kitchen', label: 'Oshxona' },
+    { key: 'bathroom', label: 'Hammom' },
   ];
 
+  const hasActiveFilters = Boolean(
+    filters.search ||
+    filters.forFamily ||
+    filters.forStudents ||
+    (filters.rooms && filters.rooms !== 'all') ||
+    filters.minPrice ||
+    filters.maxPrice
+  );
+
   return (
-    <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
-      {/* 1. Manzil qidirish */}
-      <div className="relative mb-3">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-          <Search className="w-4 h-4 text-emerald-600" />
-        </div>
+    <div className="bg-white rounded-xl p-4 border border-zinc-200/80 shadow-2xs space-y-3">
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Manzil qidirish (masalan: Namangan shahar, Davlatobod, Chorsu...)"
+          placeholder="Manzil bo‘yicha qidirish (Namangan, Davlatobod, Chorsu...)"
           value={filters.search || ''}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
-          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-emerald-500 focus:bg-white transition-colors"
+          className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-zinc-50/70 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:outline-hidden focus:border-zinc-400 focus:bg-white transition-colors"
         />
       </div>
 
-      {/* 2. Soddalashtirilgan tezkor tugmalar (TZ 8-bo'limga mos) */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Xonalar soni */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg">
+      {/* Main Filter Row */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Rooms */}
+          <div className="inline-flex items-center bg-zinc-100 p-0.5 rounded-lg border border-zinc-200/60">
             {roomOptions.map((r) => {
               const isSelected =
                 (r === 'all' && (!filters.rooms || filters.rooms === 'all')) ||
@@ -81,10 +81,10 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
                   key={r}
                   type="button"
                   onClick={() => handleRoomSelect(r)}
-                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                     isSelected
-                      ? 'bg-emerald-600 text-white shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-white text-zinc-900 shadow-2xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
                   }`}
                 >
                   {r === 'all' ? 'Barchasi' : `${r} xona`}
@@ -97,46 +97,48 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
           <button
             type="button"
             onClick={() => onChange({ ...filters, forFamily: !filters.forFamily })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               filters.forFamily
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                ? 'bg-zinc-900 text-white border-zinc-900'
+                : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300'
             }`}
           >
-            👨‍👩‍👧 Oilaviy
+            Oilaviy
           </button>
 
           {/* Talabalar */}
           <button
             type="button"
             onClick={() => onChange({ ...filters, forStudents: !filters.forStudents })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               filters.forStudents
-                ? 'bg-amber-600 text-white border-amber-600'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                ? 'bg-zinc-900 text-white border-zinc-900'
+                : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300'
             }`}
           >
-            🎓 Talabalar
+            Talabalar
           </button>
 
-          {/* Qulayliklar va narx toggle */}
+          {/* Advanced toggle */}
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+              showAdvanced
+                ? 'bg-zinc-100 text-zinc-900 border-zinc-300'
+                : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300'
+            }`}
           >
-            <Filter className="w-3.5 h-3.5 text-slate-500" />
-            <span>Narx va qulayliklar</span>
-            {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <span>Qo‘shimcha</span>
           </button>
         </div>
 
-        {/* Filtrlarni tozalash */}
-        {(filters.search || filters.forFamily || filters.forStudents || (filters.rooms && filters.rooms !== 'all') || filters.minPrice || filters.maxPrice) && (
+        {hasActiveFilters && (
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-rose-600 transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 transition-colors ml-auto"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Tozalash</span>
@@ -144,18 +146,18 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
         )}
       </div>
 
-      {/* Qo'shimcha sodda parametrlar */}
+      {/* Advanced Expandable Panel */}
       {showAdvanced && (
-        <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 animate-in fade-in duration-150">
-          {/* Narx oralig'i */}
+        <div className="pt-3 mt-2 border-t border-zinc-100 space-y-3">
+          {/* Price Range */}
           <div>
-            <span className="block text-2xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-              Narx oralig‘i (so‘m):
+            <span className="text-2xs font-medium text-zinc-500 uppercase tracking-wider block mb-1">
+              Narx oralig‘i (so‘m)
             </span>
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="number"
-                placeholder="Min narx (masalan: 500 000)"
+                placeholder="Minimal narx"
                 value={filters.minPrice ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -163,11 +165,11 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
                     minPrice: e.target.value === '' ? undefined : Number(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-emerald-500"
+                className="w-full px-2.5 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-md focus:outline-hidden focus:border-zinc-400"
               />
               <input
                 type="number"
-                placeholder="Maks narx (masalan: 3 000 000)"
+                placeholder="Maksimal narx"
                 value={filters.maxPrice ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -175,17 +177,17 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
                     maxPrice: e.target.value === '' ? undefined : Number(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-emerald-500"
+                className="w-full px-2.5 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-md focus:outline-hidden focus:border-zinc-400"
               />
             </div>
           </div>
 
-          {/* Qulayliklar */}
+          {/* Amenities */}
           <div>
-            <span className="block text-2xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-              Qulayliklar:
+            <span className="text-2xs font-medium text-zinc-500 uppercase tracking-wider block mb-1.5">
+              Qulayliklar
             </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {amenitiesList.map((item) => {
                 const isChecked = Boolean(
                   filters.amenities && filters.amenities[item.key as keyof typeof filters.amenities]
@@ -195,14 +197,13 @@ export default function HouseFilters({ filters, onChange, onReset }: HouseFilter
                     key={item.key}
                     type="button"
                     onClick={() => handleAmenityToggle(item.key)}
-                    className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs text-left transition-colors ${
+                    className={`px-2.5 py-1.5 rounded-md border text-2xs sm:text-xs text-left transition-colors ${
                       isChecked
-                        ? 'bg-emerald-50 border-emerald-400 text-emerald-900 font-bold'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white'
+                        ? 'bg-zinc-900 border-zinc-900 text-white font-medium'
+                        : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'
                     }`}
                   >
-                    <span>{item.icon}</span>
-                    <span>{item.label}</span>
+                    {item.label}
                   </button>
                 );
               })}

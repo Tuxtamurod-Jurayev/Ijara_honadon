@@ -6,21 +6,13 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import HouseGallery from '@/components/house/HouseGallery';
 import MapView from '@/components/map/MapView';
-import { formatPrice, formatPriceType, formatDate } from '@/lib/utils';
+import { formatPrice, formatPriceType } from '@/lib/utils';
 import {
   MapPin,
   Phone,
-  Home,
-  Maximize2,
-  Calendar,
+  ArrowLeft,
   Check,
   X,
-  Share2,
-  ArrowLeft,
-  ShieldCheck,
-  Users,
-  GraduationCap,
-  Sparkles,
 } from 'lucide-react';
 
 interface HousePageProps {
@@ -36,9 +28,9 @@ export default async function HouseDetailPage({ params }: HousePageProps) {
   }
 
   const amenitiesList = [
-    { key: 'refrigerator', label: 'Muzlatkich', exists: house.amenities?.refrigerator },
-    { key: 'tv', label: 'Televizor', exists: house.amenities?.tv },
     { key: 'air_conditioner', label: 'Konditsioner', exists: house.amenities?.air_conditioner },
+    { key: 'tv', label: 'Televizor', exists: house.amenities?.tv },
+    { key: 'refrigerator', label: 'Muzlatkich', exists: house.amenities?.refrigerator },
     { key: 'washing_machine', label: 'Kir yuvish mashinasi', exists: house.amenities?.washing_machine },
     { key: 'wifi', label: 'Wi-Fi internet', exists: house.amenities?.wifi },
     { key: 'furniture', label: 'Mebel jihozlari', exists: house.amenities?.furniture },
@@ -47,186 +39,135 @@ export default async function HouseDetailPage({ params }: HousePageProps) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/50">
+    <div className="min-h-screen flex flex-col bg-zinc-50/60">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1">
-        {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center justify-between">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full flex-1">
+        {/* Breadcrumb */}
+        <div className="mb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-600 hover:text-emerald-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Barcha xonadonlarga qaytish</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Barcha xonadonlar</span>
           </Link>
-
-          <span className="text-2xs sm:text-xs text-slate-400">
-            Eʼlon kodi: #{house.id}
-          </span>
         </div>
 
-        {/* 3 Photos Gallery (Section 5 & 10 of TZ) */}
-        <section className="mb-8">
+        {/* 3 Images Gallery */}
+        <section className="mb-6">
           <HouseGallery images={house.images} title={house.title} />
         </section>
 
-        {/* Main Content Grid: Details vs Sticky Contact Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-10">
-          {/* Left Column: House Details */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Header info */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs">
-              <div className="flex flex-wrap items-center gap-2.5 mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-300">
-                  {house.rooms} xonali uy
+        {/* Details Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Left Column: Details */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Header Card */}
+            <div className="bg-white rounded-xl p-5 border border-zinc-200/90 shadow-2xs space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-zinc-700 bg-zinc-100 px-2.5 py-1 rounded-md">
+                  {house.rooms} xona
                 </span>
-                <span className="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  {house.area} m² maydon
+                <span className="text-xs font-medium text-zinc-700 bg-zinc-100 px-2.5 py-1 rounded-md">
+                  {house.area} m²
                 </span>
-                <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-200">
+                <span className="text-xs font-medium text-zinc-700 bg-zinc-100 px-2.5 py-1 rounded-md">
                   {formatPriceType(house.price_type)}
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+              <h1 className="text-lg sm:text-2xl font-semibold text-zinc-900 tracking-tight">
                 {house.title}
               </h1>
 
-              <p className="flex items-center gap-2 text-sm text-slate-600 mb-6">
-                <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-medium">{house.address}</span>
+              <p className="flex items-center gap-1.5 text-xs text-zinc-500">
+                <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <span>{house.address}</span>
               </p>
-
-              {/* Price Callout */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-wrap items-baseline justify-between gap-2">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 block">
-                    Oylik ijara narxi:
-                  </span>
-                  <div className="flex items-baseline gap-2 mt-0.5">
-                    <span className="text-2xl sm:text-3xl font-black text-emerald-700">
-                      {formatPrice(house.price)}
-                    </span>
-                    <span className="text-sm font-bold text-emerald-900">so‘m</span>
-                    <span className="text-xs font-semibold text-emerald-700">
-                      / {formatPriceType(house.price_type)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right text-xs text-slate-500">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>Yangilangan: {formatDate(house.updated_at || house.created_at)}</span>
-                  </span>
-                </div>
-              </div>
             </div>
 
-            {/* Target Audience: Kimlar uchun (Section 10 of TZ) */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs">
-              <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <Users className="w-5 h-5 text-emerald-600" />
-                <span>Kimlar uchun mo‘ljallangan:</span>
+            {/* Target Audience */}
+            <div className="bg-white rounded-xl p-5 border border-zinc-200/90 shadow-2xs">
+              <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">
+                Kimlar uchun
               </h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div
-                  className={`p-4 rounded-2xl border flex items-center gap-3.5 ${
+                  className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
                     house.for_family
-                      ? 'bg-emerald-50/60 border-emerald-300 text-emerald-950'
-                      : 'bg-slate-50 border-slate-200 text-slate-400'
+                      ? 'bg-zinc-50 border-zinc-300 text-zinc-900 font-medium'
+                      : 'bg-zinc-50/50 border-zinc-200 text-zinc-400'
                   }`}
                 >
-                  <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
-                      house.for_family ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'
-                    }`}
-                  >
-                    {house.for_family ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm">👨‍👩‍👧 Oilaviy yashash</h3>
-                    <p className="text-xs text-slate-500">
-                      {house.for_family ? 'Oilalar uchun ruxsat berilgan' : 'Oila uchun berilmaydi'}
-                    </p>
-                  </div>
+                  <span>Oilaviy yashash</span>
+                  {house.for_family ? (
+                    <Check className="w-4 h-4 text-zinc-900" />
+                  ) : (
+                    <X className="w-4 h-4 text-zinc-400" />
+                  )}
                 </div>
 
                 <div
-                  className={`p-4 rounded-2xl border flex items-center gap-3.5 ${
+                  className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
                     house.for_students
-                      ? 'bg-amber-50/60 border-amber-300 text-amber-950'
-                      : 'bg-slate-50 border-slate-200 text-slate-400'
+                      ? 'bg-zinc-50 border-zinc-300 text-zinc-900 font-medium'
+                      : 'bg-zinc-50/50 border-zinc-200 text-zinc-400'
                   }`}
                 >
-                  <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
-                      house.for_students ? 'bg-amber-600 text-white' : 'bg-slate-200 text-slate-500'
-                    }`}
-                  >
-                    {house.for_students ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm">🎓 Talabalar</h3>
-                    <p className="text-xs text-slate-500">
-                      {house.for_students ? 'Talabalar qabul qilinadi' : 'Talabalar uchun mo‘ljallanmagan'}
-                    </p>
-                  </div>
+                  <span>Talabalar uchun</span>
+                  {house.for_students ? (
+                    <Check className="w-4 h-4 text-zinc-900" />
+                  ) : (
+                    <X className="w-4 h-4 text-zinc-400" />
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Amenities Grid: Qulayliklar (Section 10 of TZ) */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs">
-              <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-emerald-600" />
-                <span>Xonadondagi qulayliklar:</span>
+            {/* Amenities */}
+            <div className="bg-white rounded-xl p-5 border border-zinc-200/90 shadow-2xs">
+              <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">
+                Qulayliklar
               </h2>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {amenitiesList.map((item) => (
                   <div
                     key={item.key}
-                    className={`p-3 rounded-2xl border flex items-center gap-2.5 ${
+                    className={`p-2.5 rounded-lg border text-xs flex items-center justify-between ${
                       item.exists
-                        ? 'bg-emerald-50/50 border-emerald-200 text-slate-900 font-semibold'
-                        : 'bg-slate-50/80 border-slate-200 text-slate-400 line-through'
+                        ? 'bg-zinc-50 border-zinc-200 text-zinc-900 font-medium'
+                        : 'bg-zinc-50/40 border-zinc-100 text-zinc-300'
                     }`}
                   >
-                    <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
-                        item.exists ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-400'
-                      }`}
-                    >
-                      {item.exists ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                    </div>
-                    <span className="text-xs">{item.label}</span>
+                    <span>{item.label}</span>
+                    {item.exists ? (
+                      <Check className="w-3.5 h-3.5 text-zinc-700 shrink-0" />
+                    ) : (
+                      <X className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
+                    )}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Description / Izoh */}
+            {/* Description */}
             {house.description && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs">
-                <h2 className="text-lg font-bold text-slate-900 mb-3">
-                  Qo‘shimcha maʼlumot (Izoh):
+              <div className="bg-white rounded-xl p-5 border border-zinc-200/90 shadow-2xs">
+                <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
+                  Tavsif
                 </h2>
-                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                <p className="text-xs sm:text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
                   {house.description}
                 </p>
               </div>
             )}
 
-            {/* Location & Interactive Map (Section 10 & 16 of TZ) */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-emerald-600" />
-                <span>Lokatsiya va Xarita:</span>
+            {/* Location Map */}
+            <div className="space-y-2">
+              <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                Lokatsiya
               </h2>
-
               <MapView
                 latitude={house.latitude}
                 longitude={house.longitude}
@@ -236,61 +177,44 @@ export default async function HouseDetailPage({ params }: HousePageProps) {
             </div>
           </div>
 
-          {/* Right Column: Sticky Contact & Fast Action Card */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-28 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-lg space-y-6">
+          {/* Right Column: Contact Card */}
+          <div className="md:col-span-1">
+            <div className="sticky top-20 bg-white rounded-xl p-5 border border-zinc-200/90 shadow-2xs space-y-4">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                <span className="text-2xs font-medium text-zinc-500 uppercase tracking-wider block mb-0.5">
                   Ijara narxi
                 </span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-3xl font-black text-slate-900">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl font-bold text-zinc-900 tracking-tight">
                     {formatPrice(house.price)}
                   </span>
-                  <span className="text-sm font-bold text-slate-600">so‘m</span>
+                  <span className="text-xs text-zinc-500">so‘m</span>
                 </div>
-                <span className="text-xs text-slate-500 font-medium capitalize">
+                <span className="text-xs text-zinc-500 capitalize">
                   {formatPriceType(house.price_type)}
                 </span>
               </div>
 
-              <div className="border-t border-slate-100 pt-5 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-semibold text-slate-400 block">
-                      Aloqa telefoni
-                    </span>
-                    <a
-                      href={`tel:${house.phone}`}
-                      className="text-lg font-extrabold text-slate-900 hover:text-emerald-600 transition-colors"
-                    >
-                      {house.phone}
-                    </a>
-                  </div>
+              <div className="pt-3 border-t border-zinc-100 space-y-3">
+                <div>
+                  <span className="text-2xs font-medium text-zinc-500 uppercase tracking-wider block mb-0.5">
+                    Telefon raqam
+                  </span>
+                  <a
+                    href={`tel:${house.phone}`}
+                    className="text-base font-semibold text-zinc-900 hover:text-zinc-600 transition-colors"
+                  >
+                    {house.phone}
+                  </a>
                 </div>
 
-                {/* Call CTA Button */}
                 <a
                   href={`tel:${house.phone}`}
-                  className="w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-2xl font-bold text-sm bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-600/20 active:scale-98 transition-all"
+                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-xs font-medium bg-zinc-900 text-white hover:bg-zinc-800 transition-colors shadow-2xs"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-3.5 h-3.5" />
                   <span>Qo‘ng‘iroq qilish</span>
                 </a>
-              </div>
-
-              {/* Safety notice */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-2xs sm:text-xs text-slate-500 space-y-2">
-                <div className="flex items-center gap-1.5 font-bold text-slate-700">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Xavfsizlik eslatmasi</span>
-                </div>
-                <p>
-                  Hech qachon xonadonni borib ko‘rmasdan oldin oldindan to‘lov (zaklad) qilmang.
-                </p>
               </div>
             </div>
           </div>

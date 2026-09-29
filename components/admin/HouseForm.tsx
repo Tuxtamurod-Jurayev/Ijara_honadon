@@ -303,45 +303,45 @@ export default function HouseForm({ initialData, isEdit = false }: HouseFormProp
 
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
-            Kimlar uchun ruxsat berilgan:
+            Kimlar uchun:
           </label>
           <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-3 cursor-pointer bg-slate-800/80 px-4 py-3 rounded-xl border border-slate-700 hover:border-emerald-500 transition-colors">
+            <label className="flex items-center gap-2 cursor-pointer bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={forFamily}
                 onChange={(e) => setForFamily(e.target.checked)}
                 className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 border-slate-600 bg-slate-700"
               />
-              <span className="text-sm font-semibold text-slate-200">👨‍👩‍👧 Oilaviy yashash</span>
+              <span className="text-xs font-semibold text-slate-200">Oilaviy yashash</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer bg-slate-800/80 px-4 py-3 rounded-xl border border-slate-700 hover:border-emerald-500 transition-colors">
+            <label className="flex items-center gap-2 cursor-pointer bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={forStudents}
                 onChange={(e) => setForStudents(e.target.checked)}
                 className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 border-slate-600 bg-slate-700"
               />
-              <span className="text-sm font-semibold text-slate-200">🎓 Talabalar</span>
+              <span className="text-xs font-semibold text-slate-200">Talabalar</span>
             </label>
           </div>
         </div>
 
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">
-            Qulayliklar (Mavjudlarini belgilang):
+            Qulayliklar:
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {[
-              { key: 'refrigerator', label: 'Muzlatkich', icon: '🧊' },
-              { key: 'tv', label: 'Televizor', icon: '📺' },
-              { key: 'air_conditioner', label: 'Konditsioner', icon: '❄️' },
-              { key: 'washing_machine', label: 'Kir yuvish m.', icon: '🧺' },
-              { key: 'wifi', label: 'Wi-Fi', icon: '📶' },
-              { key: 'furniture', label: 'Mebel', icon: '🛋️' },
-              { key: 'kitchen', label: 'Oshxona', icon: '🍳' },
-              { key: 'bathroom', label: 'Hammom', icon: '🚿' },
+              { key: 'refrigerator', label: 'Muzlatkich' },
+              { key: 'tv', label: 'Televizor' },
+              { key: 'air_conditioner', label: 'Konditsioner' },
+              { key: 'washing_machine', label: 'Kir yuvish m.' },
+              { key: 'wifi', label: 'Wi-Fi' },
+              { key: 'furniture', label: 'Mebel' },
+              { key: 'kitchen', label: 'Oshxona' },
+              { key: 'bathroom', label: 'Hammom' },
             ].map((item) => {
               const checked = Boolean(amenities[item.key as keyof HouseAmenities]);
               return (
@@ -349,14 +349,14 @@ export default function HouseForm({ initialData, isEdit = false }: HouseFormProp
                   key={item.key}
                   type="button"
                   onClick={() => handleAmenityToggle(item.key as keyof HouseAmenities)}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-medium text-left transition-all ${
+                  className={`flex items-center justify-between p-2.5 rounded-xl border text-xs font-medium text-left transition-all ${
                     checked
                       ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold'
                       : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white'
                   }`}
                 >
-                  <span>{item.icon}</span>
                   <span>{item.label}</span>
+                  {checked ? <span>✓</span> : null}
                 </button>
               );
             })}

@@ -6,7 +6,6 @@ import Footer from '@/components/layout/Footer';
 import HouseCard from '@/components/house/HouseCard';
 import HouseFilters from '@/components/filters/HouseFilters';
 import { House, HouseFilterParams } from '@/types/house';
-import { Building2, Frown } from 'lucide-react';
 
 export default function HomePage() {
   const [houses, setHouses] = useState<House[]>([]);
@@ -64,21 +63,21 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-zinc-50/60">
       <Navbar />
 
-      {/* Soddalashtirilgan qulay sarlavha va qidiruv bo'limi */}
-      <section className="bg-white border-b border-slate-200 py-8 sm:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-6">
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            IJARAGA XONADON TOPING
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto">
-            Namangan va boshqa hududlarda talabalar hamda oilalar uchun mavjud ijara xonadonlari
-          </p>
-        </div>
+      {/* Clean Minimal Search Section */}
+      <section className="bg-white border-b border-zinc-200 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-4">
+            <h1 className="text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight">
+              Ijaraga xonadonlar
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">
+              Oila va talabalar uchun mavjud xonadonlar ro‘yxati
+            </p>
+          </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <HouseFilters
             filters={filters}
             onChange={(newFilters) => setFilters(newFilters)}
@@ -87,59 +86,53 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Xonadonlar ro'yxati (Grid) */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full flex-1">
-        <div className="flex items-center justify-between mb-6 pb-3 border-b border-slate-200">
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-emerald-600" />
-            <span>XONADONLAR</span>
-          </h2>
-          <span className="text-xs font-semibold text-slate-500 bg-white px-3 py-1 rounded-lg border border-slate-200">
-            {loading ? 'Yuklanmoqda...' : `${houses.length} ta faol xonadon`}
+      {/* Houses List */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full flex-1">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs font-medium text-zinc-500">
+            {loading ? 'Yuklanmoqda...' : `${houses.length} ta xonadon mavjud`}
           </span>
         </div>
 
-        {/* Yuklanish holati */}
+        {/* Loading skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3].map((idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-slate-200 p-4 h-80 animate-pulse flex flex-col justify-between"
+                className="bg-white rounded-xl border border-zinc-200 p-4 h-72 animate-pulse flex flex-col justify-between"
               >
-                <div className="bg-slate-200 h-44 rounded-xl w-full" />
+                <div className="bg-zinc-100 h-40 rounded-lg w-full" />
                 <div className="space-y-2 mt-3">
-                  <div className="h-4 bg-slate-200 rounded w-3/4" />
-                  <div className="h-3 bg-slate-100 rounded w-1/2" />
-                  <div className="h-7 bg-slate-100 rounded w-full mt-2" />
+                  <div className="h-4 bg-zinc-100 rounded w-2/3" />
+                  <div className="h-3 bg-zinc-100 rounded w-1/3" />
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Natija topilmagan holat */}
+        {/* Empty state */}
         {!loading && houses.length === 0 && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center max-w-md mx-auto">
-            <Frown className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 mb-1">
+          <div className="bg-white rounded-xl border border-zinc-200 p-8 text-center max-w-sm mx-auto my-6">
+            <p className="text-sm font-medium text-zinc-800 mb-1">
               Xonadon topilmadi
-            </h3>
-            <p className="text-xs text-slate-500 mb-4">
-              Kiritilgan mezonlarga mos faol reklama topilmadi.
+            </p>
+            <p className="text-xs text-zinc-500 mb-4">
+              Kiritilgan mezonlarga mos eʼlon mavjud emas.
             </p>
             <button
               onClick={handleResetFilters}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-zinc-900 text-white hover:bg-zinc-800 transition-colors"
             >
               Filtrlarni tozalash
             </button>
           </div>
         )}
 
-        {/* Xonadonlar Cardlari */}
+        {/* Houses Grid */}
         {!loading && houses.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {houses.map((house) => (
               <HouseCard key={house.id} house={house} />
             ))}
